@@ -52,14 +52,11 @@ def game_thread_check():
     for game in remainingGames:
         global postedSomething
         
-        #If within the post threshold for pre-game threads and the thread hasn't already been posted, post it.
         #Post the pre-game thread on or after 8am on the day of the game
-        
-#       if ((time.mktime(game['t'])-preGamePostThreshold <= time.time() <= time.mktime(game['t'])) and (game['preGamePosted'] is False)):
-        if ((game['t'][0] == time.localtime()[0] and game['t'][1] == time.localtime()[1] and game['t'][2] == time.localtime()[2] and time.localtime()[3] >= 8]) and (game['preGamePosted'] is False)):
+        if ((game['t'][0] == time.localtime()[0] and game['t'][1] == time.localtime()[1] and game['t'][2] == time.localtime()[2] and time.localtime()[3] >= 8) and (game['preGamePosted'] is False)):
             
             #Post the thread
-            logging.info("A game is scheduled this afternoon. Posting pregame thread...")
+            logging.info("A game is scheduled today. Posting pregame thread...")
             authenticate()
             oauth_helper.refresh()
             submission = reddit_client.submit(subreddit, game['preGameThreadTitle'], text="Go Bills!")
