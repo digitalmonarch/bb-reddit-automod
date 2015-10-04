@@ -4,6 +4,7 @@ import praw
 import time
 import logging
 from prawoauth2 import PrawOAuth2Mini
+import os
 
 def load_games():
     #Open the DB and load of all the possible keys into a collection called 'keys'
@@ -113,7 +114,11 @@ def game_thread_check():
             #Sticky the thread
             logging.info("Stickying the thread")
             submission.sticky()
-            logging.info("Update complete.")
+
+            #Begin monitoring the game
+            logging.info("Starting game monitor")
+            os.system("python bb-game-monitor.py &")
+            logging.info ("Game monitor has been started asynchronously. Update complete.")
             
 try:
     #Load bot settings
@@ -128,7 +133,6 @@ try:
     preGamePostThreshold = 18000 #Five hours (in seconds)
     gameDayPostThreshold = 3600 #One hour (in seconds)
        
-    
     #Load unposted games into memory
     load_games()
 
