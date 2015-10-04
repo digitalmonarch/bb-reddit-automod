@@ -13,33 +13,33 @@ logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt
 
 #Callback function
 def cb(active, completed, diffs):
-	for g in active:
-		if (g.home == 'BUF' or g.away == 'BUF'):
-			time_remaining = g.time
-			gameInfo = '%s :: %s (%d) vs. %s (%d)' % (time_remaining, g.home, g.score_home, g.away, g.score_away)
-			logging.info(gameInfo)
+    for g in active:
+        if (g.home == 'BUF' or g.away == 'BUF'):
+            time_remaining = g.time
+            gameInfo = '%s :: %s (%d) vs. %s (%d)' % (time_remaining, g.home, g.score_home, g.away, g.score_away)
+            logging.info(gameInfo)
 
-			if (time_remaining == 'Q4 02:00' or time_remaining.startswith('Q4 01')):
-				logging.info("The two minute warning has been reached. Post the post-game thread and quit.")
-    			
-    			#Authenticate to Reddit
-    			logging.info("Authenticating to Reddit...")
-    			reddit_client = praw.Reddit(user_agent=user_agent)
-    			oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
-				oauth_helper.refresh()
-				
-				#Post the thread
-				postGameThreadTitle = "Post-Game Thread: " + entry['away'] + " @ " + entry['home'] + " - " + sType + "Week " + str(entry['week']) + ", " + str(entry['year']),
-            	't' : time.strptime(str(entry['year']) + " " + str(entry['month']) + " " + str(entry['day']) + " " + entry['time'],"%Y %m %d %I:%M %p")
+            if (time_remaining == 'Q4 02:00' or time_remaining.startswith('Q4 01')):
+                logging.info("The two minute warning has been reached. Post the post-game thread and quit.")
 
-            	submission = reddit_client.submit(subreddit, postGameThreadTitle, text=g.nice_score)
+                #Authenticate to Reddit
+                logging.info("Authenticating to Reddit...")
+                reddit_client = praw.Reddit(user_agent=user_agent)
+                oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
+                oauth_helper.refresh()
 
-	            #Sticky the thread
-	            logging.info("Stickying the thread")
-	            submission.sticky()
-	            logging.info("Update complete. Exiting game monitor.")
+                #Post the thread
+                postGameThreadTitle = "Post-Game Thread: " + entry['away'] + " @ " + entry['home'] + " - " + sType + "Week " + str(entry['week']) + ", " + str(entry['year']),
+                't' : time.strptime(str(entry['year']) + " " + str(entry['month']) + " " + str(entry['day']) + " " + entry['time'],"%Y %m %d %I:%M %p")
 
-				exit()
+                submission = reddit_client.submit(subreddit, postGameThreadTitle, text=g.nice_score)
+
+                #Sticky the thread
+                logging.info("Stickying the thread")
+                submission.sticky()
+                logging.info("Update complete. Exiting game monitor.")
+
+                exit()
 
 logging.info("Intializing game monitor...")
 nflgame.live.run(cb)
