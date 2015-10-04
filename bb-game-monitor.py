@@ -29,10 +29,12 @@ def cb(active, completed, diffs):
                 oauth_helper.refresh()
 
                 #Post the thread
-                postGameThreadTitle = "Post-Game Thread: " + entry['away'] + " @ " + entry['home'] + " - " + sType + "Week " + str(entry['week']) + ", " + str(entry['year']),
-                't' : time.strptime(str(entry['year']) + " " + str(entry['month']) + " " + str(entry['day']) + " " + entry['time'],"%Y %m %d %I:%M %p")
+                postGameThreadTitle = "Post-Game Thread: " + g.away + "@" + g.home
 
-                submission = reddit_client.submit(subreddit, postGameThreadTitle, text=g.nice_score)
+                submission = reddit_client.submit(subreddit, postGameThreadTitle, 
+                    text=("* Please be mindful of our sidebar rules.\n\n"
+                    "* Please report any violations.\n\n"
+                    "* Self-post threads are subject to deletion during and after the game."))
 
                 #Sticky the thread
                 logging.info("Stickying the thread")

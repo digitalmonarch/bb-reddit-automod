@@ -118,7 +118,7 @@ def game_thread_check():
             #Begin monitoring the game
             logging.info("Starting game monitor")
             os.system("python bb-game-monitor.py &")
-            logging.info ("Game monitor has been started asynchronously. Update complete.")
+            logging.info ("Update complete.")
             
 try:
     #Load bot settings
