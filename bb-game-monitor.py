@@ -15,7 +15,7 @@ logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt
 def cb(active, completed, diffs):
     for g in active:
         if (g.home == 'BUF' or g.away == 'BUF'):
-            time_remaining = g.time
+            time_remaining = str(g.time)
             gameInfo = '%s :: %s (%d) vs. %s (%d)' % (time_remaining, g.home, g.score_home, g.away, g.score_away)
             logging.info(gameInfo)
 

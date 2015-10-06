@@ -117,7 +117,7 @@ def game_thread_check():
 
             #Begin monitoring the game
             logging.info("Starting game monitor")
-            os.system("python bb-game-monitor.py &")
+            os.system("/usr/bin/python /home/pi/test/bb-game-monitor.py &")
             logging.info ("Update complete.")
             
 try:
