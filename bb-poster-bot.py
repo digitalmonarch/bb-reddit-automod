@@ -117,12 +117,12 @@ def game_thread_check():
 
             #Begin monitoring the game
             logging.info("Starting game monitor")
-            os.system("/usr/bin/python /home/pi/test/bb-game-monitor.py &")
+            os.system(monitor_path + " &")
             logging.info ("Update complete.")
             
 try:
     #Load bot settings
-    from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path)
+    from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path, monitor_path)
     
     #Configure logging
     logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
@@ -131,7 +131,7 @@ try:
     postedSomething = False
     remainingGames = []
     preGamePostThreshold = 18000 #Five hours (in seconds)
-    gameDayPostThreshold = 3600 #One hour (in seconds)
+    gameDayPostThreshold = 300 #One hour (in seconds)
        
     #Load unposted games into memory
     load_games()

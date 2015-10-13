@@ -6,7 +6,7 @@ import praw
 from prawoauth2 import PrawOAuth2Mini
 
 #Load bot settings
-from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path)
+from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path, monitor_path)
 
 #Configure logging
 logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
