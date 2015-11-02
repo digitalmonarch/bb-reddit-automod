@@ -28,7 +28,7 @@ try:
         oauth_helper.refresh()
 
         #Post Thread
-        threadTitle = "Feedback, Fantasy, and Free-Talk Friday - " + time.strftime('%m/%d/%Y', time.gmtime())
+        threadTitle = "Feedback, Fantasy, and Free-Talk Friday - " + time.strftime('%m/%d/%Y', time.localtime())
         threadBody = (
         "**Feedback** - Got a suggestion about what you'd like to see out of the sub? This is the place to put it; just reply to /u/BillsMod's comment for whatever you might like to say.\n\n"
         "**Fantasy Talk** - Since fantasy threads are something we discourage across the sub, this is a place to go for some Bills-specific questions or thoughts. **/r/fantasyfootball** is still the place one should go for the best insight and higher quality or pointed discussion, but here's an in-house solution to bring up something minor.\n\n"
