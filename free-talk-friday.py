@@ -20,7 +20,7 @@ try:
     #Configure logging
     logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
     
-    if (time.strftime('%a', time.localtime()) == "Fri"):
+    if (time.strftime('%a', time.localtime()) == "Sun"):
         logging.info("Time to post free-talk Friday thread.")
 
         #Authenticate
@@ -44,11 +44,11 @@ try:
         
         time.sleep(10)
         logging.info("Commenting on thread...")
-        submission.add_comment("**Please reply to this comment with any feedback, ideas, or suggestions you may have for the mod team about the subreddit.**")
+        submission.add_comment("**Please reply to this comment with any feedback, ideas, or suggestions you may have for the mod team about the subreddit.**").distinguish()
 
         logging.info("All done. Exiting...")
 
-    elif (time.strftime('%a', time.localtime()) == "Sat"):
+    elif (time.strftime('%a', time.localtime()) == "Mon"):
 
         #Authenticate
         authenticate()
