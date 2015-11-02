@@ -20,7 +20,7 @@ try:
     #Configure logging
     logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
     
-    if (time.strftime('%a', time.localtime()) == "Sun"):
+    if (time.strftime('%a', time.localtime()) == "Fri"):
         logging.info("Time to post free-talk Friday thread.")
 
         #Authenticate
@@ -48,7 +48,7 @@ try:
 
         logging.info("All done. Exiting...")
 
-    elif (time.strftime('%a', time.localtime()) == "Mon"):
+    elif (time.strftime('%a', time.localtime()) == "Sat"):
 
         #Authenticate
         authenticate()
