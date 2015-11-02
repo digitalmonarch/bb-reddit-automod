@@ -55,7 +55,6 @@ def game_thread_check():
         
         #Post the pre-game thread on or after 8am on the day of the game
         if ((game['t'][0] == time.localtime()[0] and game['t'][1] == time.localtime()[1] and game['t'][2] == time.localtime()[2] and time.localtime()[3] >= 8) and (game['preGamePosted'] is False)):
-            
             #Post the thread
             logging.info("A game is scheduled today. Posting pregame thread...")
             authenticate()
@@ -131,7 +130,7 @@ try:
     postedSomething = False
     remainingGames = []
     preGamePostThreshold = 18000 #Five hours (in seconds)
-    gameDayPostThreshold = 300 #One hour (in seconds)
+    gameDayPostThreshold = 900 #15 minutes (in seconds)
        
     #Load unposted games into memory
     load_games()
