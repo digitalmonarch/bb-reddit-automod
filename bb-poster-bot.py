@@ -77,7 +77,8 @@ def game_thread_check():
             #Sticky the thread
             logging.info("Stickying the thread")
             submission.sticky()
-            logging.info("Update complete.")
+            
+            logging.info("Update complete")
         
         #If within the post threshold for game threads and the thread hasn't already been posted, post it.
         if ((time.mktime(game['t'])-gameDayPostThreshold <= time.time() <= time.mktime(game['t'])) and (game['gameDayPosted'] is False)):
@@ -114,10 +115,15 @@ def game_thread_check():
             logging.info("Stickying the thread")
             submission.sticky()
 
+            #Set suggested sort to New
+            logging.info("Setting suggested sort")
+            submission.set_suggested_sort(sort='new')
+
             #Begin monitoring the game
             logging.info("Starting game monitor")
             os.system(monitor_path + " &")
-            logging.info ("Update complete.")
+
+            logging.info ("Update complete")
             
 try:
     #Load bot settings
