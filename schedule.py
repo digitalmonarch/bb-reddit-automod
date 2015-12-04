@@ -5,7 +5,11 @@ import xml.dom.minidom as xml
 import shelve
 import logging
 
-logging.basicConfig(filename='/home/pi/test/bot.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
+#Load bot settings
+from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path)
+
+#Configure logging
+logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
 
 # Use a modified version of the legacy nflgame schedule import script to load
 # all Bills games info into a dictionary and store it within a shelve. The dictionary will 
@@ -44,7 +48,7 @@ for year in xrange(start_year, end_year + 1):
                 # are PM since Buffalo will play Jacksonville in Londan this year at 9AM EST.
                 if home == 'JAC':
                     gameTime = unicode(g.getAttribute('t') + ' AM')
-                    preGamePosted = True
+                    preGamePosted = False
                 else:
                     gameTime = unicode(g.getAttribute('t') + ' PM')
                     preGamePosted = False
@@ -79,13 +83,13 @@ info = {
     'eid': '2015081452',
     'wday': 'Wed',
     'year': 2015,
-    'month': 10,
-    'day': 03,
-    'time': unicode('11:38 PM'),
+    'month': 11,
+    'day': 21,
+    'time': unicode('4:40 PM'),
     'season_type': 'REG',
     'week': 0,
     'home': 'BUF',
-    'away': 'PIT',
+    'away': 'STL',
     'gamekey': '56767',
     'preGamePosted': False,
     'gameDayPosted': False,

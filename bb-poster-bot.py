@@ -99,6 +99,7 @@ def game_thread_check():
             "* Use [Reddit-Stream]("+ url + ") to follow comments on this post in real-time.\n\n"
             "* Join the conversation on [GroupMe](https://groupme.com/join_group/13046369/yUNI2l)\n\n"
             "* Find us on Twitter [@rbuffalobills](https://twitter.com/rBuffaloBills)\n\n"
+            "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n\n"
             "* Go Bills!")
             submission.edit(editedText)
             
@@ -121,7 +122,7 @@ def game_thread_check():
 
             #Begin monitoring the game
             logging.info("Starting game monitor")
-            os.system(monitor_path + " &")
+            os.system("python " + monitor_path + " &")
 
             logging.info ("Update complete")
             

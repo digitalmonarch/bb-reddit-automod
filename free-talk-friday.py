@@ -20,6 +20,8 @@ try:
     #Configure logging
     logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
     
+    logging.info("Free-talk Friday - Beginning day of week check.")
+
     if (time.strftime('%a', time.localtime()) == "Fri"):
         logging.info("Time to post free-talk Friday thread.")
 
