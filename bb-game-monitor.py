@@ -43,7 +43,7 @@ def cb(active, completed, diffs):
                 submission = reddit_client.submit(subreddit, postGameThreadTitle, 
                     text=("* Please be mindful of our sidebar rules.\n\n"
                     "* Please report any violations.\n\n"
-                    "* Self-post threads are subject to deletion during and after the game."))
+                    "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation."))
 
                 #Sticky the thread
                 logging.info("Stickying the thread")
