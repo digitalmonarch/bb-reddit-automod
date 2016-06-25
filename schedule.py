@@ -16,8 +16,8 @@ logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt
 # be used to determine when it is time to create gameday threads, how to title them, etc.
 
 xml_base_url = 'http://www.nfl.com/ajax/scorestrip?'
-start_year = 2015 # Years before 2009 don't seem to have JSON feeds.
-end_year = 2015
+start_year = 2016 # Years before 2009 don't seem to have JSON feeds.
+end_year = 2016
 team = 'BUF'
 season_types = (
     ('PRE', xrange(1, 4 + 1)),
@@ -46,13 +46,16 @@ for year in xrange(start_year, end_year + 1):
                 
                 #A hack to deal with the fact that the nfl XML doesn't provide 24 hour times and we can't assume that all times
                 # are PM since Buffalo will play Jacksonville in Londan this year at 9AM EST.
-                if home == 'JAC':
-                    gameTime = unicode(g.getAttribute('t') + ' AM')
-                    preGamePosted = False
-                else:
-                    gameTime = unicode(g.getAttribute('t') + ' PM')
-                    preGamePosted = False
+                #if home == 'JAC':
+                #    gameTime = unicode(g.getAttribute('t') + ' AM')
+                #    preGamePosted = False
+                #else:
+                #    gameTime = unicode(g.getAttribute('t') + ' PM')
+                #    preGamePosted = False
                 
+                gameTime = unicode(g.getAttribute('t') + ' PM')
+                preGamePosted = False
+
                 info = {
                     'eid': eid,
                     'wday': g.getAttribute('d'),
