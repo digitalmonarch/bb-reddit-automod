@@ -54,7 +54,7 @@ def cb(active, completed, diffs):
 
 logging.info("bb-game-monitor is starting...")
 
-#Check top two posts and unsticky any free-talk friday threads.
+#Get the game thread submission object and store it in a global variable.
 logging.info("Begin search for game thread submission object")
 global gameThreadSubmission
 
@@ -65,5 +65,6 @@ for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
         logging.info("Game thread found. Storing submission object.")
         gameThreadSubmission = submission
 
+#Begin monitoring the game.
 logging.info("Beginning monitoring...")
 nflgame.live.run(cb)
