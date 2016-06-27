@@ -20,8 +20,29 @@ for g in games:
             elif t[0] == g.away:
                 away_friendlyName = t[3]
 
+        #Build six arrays containing the statistics of theleading passers, rushers and receivers on each team
+        homePassing, awayPassing, homeRushing, awayRushing, homeReceiving, awayReceiving = ([] for i in range(6))
+
+        for p in g.players.passing().filter(team = g.home).sort("passing_yds"):
+            homePassing.append(p)
+
+        for p in g.players.passing().filter(team = g.away).sort("passing_yds"):
+            awayPassing.append(p)
+        
+        for p in g.players.rushing().filter(team = g.home).sort("rushing_yds"):
+            homeRushing.append(p)
+
+        for p in g.players.rushing().filter(team = g.away).sort("rushing_yds"):
+            awayRushing.append(p)
+        
+        for p in g.players.receiving().filter(team = g.home).sort("receiving_yds"):
+            homeReceiving.append(p)
+
+        for p in g.players.receiving().filter(team = g.away).sort("receiving_yds"):
+            awayReceiving.append(p)
+
         editedText = ("***\n"
-            "||Score\n"
+            "| | |\n"
             "---|:-:\n" + 
             "[](/" + g.home +") **" + home_friendlyName + "**|" + str(g.score_home) + "\n"
             "[](/" + g.away +") **" + away_friendlyName + "**|" + str(g.score_away) + "\n"
@@ -37,63 +58,25 @@ for g in games:
             "|Turnovers|" + str(g.stats_home[6]) + "|" + str(g.stats_away[6]) + "|\n"
             "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
             "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n"
-            "***\n**Top Performers:**\n"
-            "***\n**Scoring Summary:**\n"
-            "***\n**Around the League:**\n"
+            "***\n**Top Performers:**\n\n"
+            "| | | | | | |\n"
+            "| :--: | :-- | :--: | :--: | :--: | :--: |\n"
+            "| **Passing** | **Name**  | **Cmp/Att** | **Yds** | **TDs** | **Ints** |\n"
+            "|[](/" + g.home + ")|" + str(homePassing[0]) + "|" + str(homePassing[0].passing_cmp) + "/" + str(homePassing[0].passing_att) + "|" + str(homePassing[0].passing_yds) + "|" + str(homePassing[0].passing_tds) + "|" + str(homePassing[0].passing_int) + "|\n"
+            "|[](/" + g.away + ")|" + str(awayPassing[0]) + "|" + str(awayPassing[0].passing_cmp) + "/" + str(awayPassing[0].passing_att) + "|" + str(awayPassing[0].passing_yds) + "|" + str(awayPassing[0].passing_tds) + "|" + str(awayPassing[0].passing_int) + "|\n"
+            "| **Rushing** | **Name**  | **Car** | **Yds** | **TDs** | **Fum** |\n"
+            "|[](/" + g.home + ")|" + str(homeRushing[0]) + "|" + str(homeRushing[0].rushing_att) + "|" + str(homeRushing[0].rushing_yds) + "|" + str(homeRushing[0].rushing_tds) + "|" + str(homeRushing[0].fumbles_lost) + "|\n"
+            "|[](/" + g.away + ")|" + str(awayRushing[0]) + "|" + str(awayRushing[0].rushing_att) + "|" + str(awayRushing[0].rushing_yds) + "|" + str(awayRushing[0].rushing_tds) + "|" + str(awayRushing[0].fumbles_lost) + "|\n"
+            "| **Receiving** | **Name**  | **Rec** | **Yds** | **TDs** | **Fum** |\n"
+            "|[](/" + g.home + ")|" + str(homeReceiving[0]) + "|" + str(homeReceiving[0].receiving_rec) + "|" + str(homeReceiving[0].receiving_yds) + "|" + str(homeReceiving[0].receiving_tds) + "|" + str(homeReceiving[0].fumbles_lost) + "|\n"
+            "|[](/" + g.away + ")|" + str(awayReceiving[0]) + "|" + str(awayReceiving[0].receiving_rec) + "|" + str(awayReceiving[0].receiving_yds) + "|" + str(awayReceiving[0].receiving_tds) + "|" + str(awayReceiving[0].fumbles_lost) + "|\n"
+            "***\n**Scoring Summary:**\n\n"
+            "***\n**Around the League:**\n\n"
             )
 
         print editedText
        
         # print "{0} Won Over {1} - {2} - {3} Week {4}".format(g.winner, g.loser, g.score_home, g.score_away, g.schedule['week'])
-
-        # print g.score_home
-        # print g.score_away
-     
-        # print "\nTeam Stats"
-        # print 'Home Team: ', g.stats_home
-        # print 'Away Team: ', g.stats_away
-
-        # #Build arrays containing the leading passers of each team
-        # homePassing = []
-        # awayPassing = []
-
-        # for p in g.players.passing().filter(team = g.home).sort("passing_yds"):
-        #     homePassing.append(p)
-
-        # for p in g.players.passing().filter(team = g.away).sort("passing_yds"):
-        #     awayPassing.append(p)
-
-        # print "\nPassing Leaders"
-        # print homePassing[0].team, homePassing[0], homePassing[0].passing_cmp, homePassing[0].passing_att, homePassing[0].passing_yds, homePassing[0].passing_tds, homePassing[0].passing_int
-        # print awayPassing[0].team, awayPassing[0], awayPassing[0].passing_cmp, awayPassing[0].passing_att, awayPassing[0].passing_yds, awayPassing[0].passing_tds, awayPassing[0].passing_int
-
-        # #Build arrays containing the leading rushers of each team
-        # homeRushing = []
-        # awayRushing = []
-
-        # for p in g.players.rushing().filter(team = g.home).sort("rushing_yds"):
-        #     homeRushing.append(p)
-
-        # for p in g.players.rushing().filter(team = g.away).sort("rushing_yds"):
-        #     awayRushing.append(p)
-
-        # print "\nRushing Leaders"
-        # print homeRushing[0].team, homeRushing[0], homeRushing[0].rushing_att, homeRushing[0].rushing_yds, homeRushing[0].rushing_tds
-        # print awayRushing[0].team, awayRushing[0], awayRushing[0].rushing_att, awayRushing[0].rushing_yds, awayRushing[0].rushing_tds
-
-        # #Build arrays containing the leading receivers of each team
-        # homeReceiving = []
-        # awayReceiving = []
-
-        # for p in g.players.receiving().filter(team = g.home).sort("receiving_yds"):
-        #     homeReceiving.append(p)
-
-        # for p in g.players.receiving().filter(team = g.away).sort("receiving_yds"):
-        #     awayReceiving.append(p)
-
-        # print "\nReceiving Leaders"
-        # print homeReceiving[0].team, homeReceiving[0], homeReceiving[0].receiving_rec, homeReceiving[0].receiving_yds, homeReceiving[0].receiving_tds
-        # print awayReceiving[0].team, awayReceiving[0], awayReceiving[0].receiving_rec, awayReceiving[0].receiving_yds, awayReceiving[0].receiving_tds
 
         # print "\nScoring Summary"
         # print g.scores
