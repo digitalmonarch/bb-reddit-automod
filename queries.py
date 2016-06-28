@@ -20,12 +20,8 @@ for g in games:
             elif t[0] == g.away:
                 away_friendlyName = t[3]
 
-        #Build sevem arrays, one containing all scoring plays and six containing the statistics of the leading passers, rushers and receivers
-        scoringPlays, homePassing, awayPassing, homeRushing, awayRushing, homeReceiving, awayReceiving = ([] for i in range(7))
-
-        #Fill an array containing string representations of all scoring plays
-        for s in g.scores:
-            scoringPlays.append(s)
+        #Build six arrays containing the statistics of the leading passers, rushers and receivers on each team.
+        homePassing, awayPassing, homeRushing, awayRushing, homeReceiving, awayReceiving = ([] for i in range(6))
 
         for p in g.players.passing().filter(team = g.home).sort("passing_yds"):
             homePassing.append(p)
@@ -77,19 +73,30 @@ for g in games:
             "***\n**Scoring Summary:**\n\n"
             "| **Qtr** | **Team** |**Type** | **Description**|\n"
             "| :--: | :--: | :--: | :-- |\n"
-            #Put a loop here that builds out a row for each scoring play
-            "***\n**Around the League:**\n\n"
             )
 
+        #Build a string representing the scoring summary and concat it to editedText
+        scoringSummaryText = ""
+
+        for s in g.scores:
+            scoringSummaryText += "|" + s.split(' - ')[1] + "|[](/" + s.split(' - ')[0] + ")|" + s.split(' - ')[2] + "|" + s.split(' - ')[3] + "|\n"
+
+        editedText += scoringSummaryText
+        editedText += ("***\n**Around the League:**\n\n"
+            "| | | | | | | | |\n"
+            "| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |\n"
+            )
+
+        #Build a string representing scores from around the league and concat it to editedText
+        AroundTheLeagueText = ""
+
+        for g in games:
+            AroundTheLeagueText += str(g)
+            
+        editedText += AroundTheLeagueText
+
         print editedText
-       
-        # print "{0} Won Over {1} - {2} - {3} Week {4}".format(g.winner, g.loser, g.score_home, g.score_away, g.schedule['week'])
-
-        print "\nScoring Summary"
-        for x in g.scores:
-            print x
-
-        # print "\nSchedule"
-        # print g.schedule
 
         #Add above code to bb-game-monitor.py
+
+        # print "{0} Won Over {1} - {2} - {3} Week {4}".format(g.winner, g.loser, g.score_home, g.score_away, g.schedule['week'])
