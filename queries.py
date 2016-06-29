@@ -83,16 +83,17 @@ for g in games:
 
         editedText += scoringSummaryText
         editedText += ("***\n**Around the League:**\n\n"
-            "| | | | | | | | |\n"
-            "| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |\n"
+            "Home |Away  |Clock  |\n"
+            "---|---|----\n"
             )
 
         #Build a string representing scores from around the league and concat it to editedText
         AroundTheLeagueText = ""
 
         for g in games:
-            AroundTheLeagueText += str(g)
-            
+            #print g.home, g.score_home, g.away, g.score_away, g.time
+            AroundTheLeagueText += "[](/" + g.home + ") "+ str(g.score_home) + "| [](/" + g.away + ") " + str(g.score_away) + "| " + str(g.time).upper() + "|\n"
+                
         editedText += AroundTheLeagueText
 
         print editedText
