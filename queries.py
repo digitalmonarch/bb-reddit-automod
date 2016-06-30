@@ -41,7 +41,8 @@ for g in games:
         for p in g.players.receiving().filter(team = g.away).sort("receiving_yds"):
             awayReceiving.append(p)
 
-        editedText = ("***\n"
+        editedText = ("***\n**Scoreboard:**\n\n"
+            "***\n"
             "| | |\n"
             "---|:-:\n" + 
             "[](/" + g.home +") **" + home_friendlyName + "**|" + str(g.score_home) + "\n"
@@ -100,4 +101,10 @@ for g in games:
 
         #Add above code to bb-game-monitor.py
 
-        # print "{0} Won Over {1} - {2} - {3} Week {4}".format(g.winner, g.loser, g.score_home, g.score_away, g.schedule['week'])
+        print "{0} Won Over {1} - {2} - {3} Week {4}".format(g.winner, g.loser, g.score_home, g.score_away, g.schedule['week'])
+        print "Post-Game Thread: " + g.away + " @ " + g.home + " (Week " + str(g.schedule['week']) + ")"
+        if (g.winner == 'DEN'):
+            print ("[BILLS WIN!](https://www.youtube.com/watch?v=PHbnQXsyDrE)\n\n"
+                "* Please be mindful of our sidebar rules.\n"
+                    "* Please report any violations.\n"
+                    "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.")
