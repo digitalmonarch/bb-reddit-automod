@@ -88,7 +88,7 @@ info = {
     'year': 2016,
     'month': 7,
     'day': 3,
-    'time': unicode('2:50 PM'),
+    'time': unicode('3:35 PM'),
     'season_type': 'REG',
     'week': 0,
     'home': 'BUF',
