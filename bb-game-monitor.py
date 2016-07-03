@@ -115,21 +115,30 @@ def cb(active, completed, diffs):
             editedText += AroundTheLeagueText
 
             #Authenticate to reddit and edit the gameday post
+            logging.info("Updating game thread body...")
             authenticate()
             gameThreadSubmission.edit(editedText)
 
             #Check to see whether or not to post the post game thread.
             #Previously did this at the 2 minute warning. time_remaining == 'Q4 02:00' or time_remaining.startswith('Q4 01')):
+            logging.info("Checking whether or not to post the post-game thread...")
             if ("FINAL" in time_remaining):
-                logging.info("Game has ended. Post the post-game thread and quit.")
+                logging.info("Game has ended. Check for game thread and unsticky it.")
 
                 authenticate()
 
-                #Post the thread
+                #Check for a game thread and unsticky it if found.
+                for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
+                    if("Game Thread:" in str(submission)):
+                        logging.info("Game thread found... Attempting to unsticky it...")
+                        submission.unsticky();
+
+                #Post the post-game thread
                 postGameThreadTitle = "Post-Game Thread: " + g.away + " @ " + g.home + " (Week " + str(g.schedule['week']) + ")"
                 postGameThreadText = ""
 
                 if (g.winner == 'BUF'):
+                    logging.info("Bills win!!!")
                     postGameThreadText = ("[BILLS WIN!](https://www.youtube.com/watch?v=PHbnQXsyDrE)\n\n"
                         "* Please be mindful of our sidebar rules.\n"
                         "* Please report any violations.\n"
@@ -153,6 +162,7 @@ def cb(active, completed, diffs):
                         "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
                         "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n")
                 else:
+                    logging.info("Bills lose...")
                     postGameThreadText = ("[...Sad Trombone](https://www.youtube.com/watch?v=84wp_zoP5v8)\n\n"
                         "* Please be mindful of our sidebar rules.\n"
                         "* Please report any violations.\n"
@@ -176,26 +186,27 @@ def cb(active, completed, diffs):
                         "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
                         "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n" )
 
+                logging.info("Posting post game thread...")
                 submission = reddit_client.submit(subreddit, postGameThreadTitle, postGameThreadText)
 
                 #Sticky the thread
-                logging.info("Stickying the thread")
+                logging.info("Stickying the thread...")
                 submission.sticky()
-                logging.info("Update complete. Exiting game monitor.")
+                logging.info("Update complete. Exiting game monitor...")
 
                 exit()
 
 logging.info("bb-game-monitor is starting...")
 
 #Get the game thread submission object and store it in a global variable.
-logging.info("Begin search for game thread submission object")
+logging.info("Begin search for game thread submission object...")
 global gameThreadSubmission
 
 authenticate()
 
 for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
     if("Game Thread:" in str(submission)):
-        logging.info("Game thread found. Storing submission object.")
+        logging.info("Game thread found. Storing submission object...")
         gameThreadSubmission = submission
 
 #Begin monitoring the game.

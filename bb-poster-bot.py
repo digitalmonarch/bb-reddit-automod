@@ -82,9 +82,16 @@ def game_thread_check():
         
         #If within the post threshold for game threads and the thread hasn't already been posted, post it.
         if ((time.mktime(game['t'])-gameDayPostThreshold <= time.time() <= time.mktime(game['t'])) and (game['gameDayPosted'] is False)):
+            logging.info("A game is scheduled to start... Checking for pre-game thread to unsticky...")
             
-            #Post the thread
-            logging.info("A game is scheduled to start. Posting gameday thread...")
+            #Check for a pre-game thread and unsticky it if found.
+            for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
+                if("Pre-Game Thread:" in str(submission)):
+                    logging.info("Pre-game thread found... Attempting to unsticky it...")
+                    submission.unsticky();
+
+            #Post the gameday thread
+            logging.info("Posting gameday thread...")
             authenticate()
             oauth_helper.refresh()
             submission = reddit_client.submit(subreddit, game['gameDayThreadTitle'], 
@@ -97,7 +104,6 @@ def game_thread_check():
             "* Please report any violations.\n\n"
             "* Self-post threads are subject to deletion during and after the game.\n\n"
             "* Use [Reddit-Stream]("+ url + ") to follow comments on this post in real-time.\n\n"
-            "* Join the conversation on [GroupMe](https://groupme.com/join_group/13046369/yUNI2l)\n\n"
             "* Find us on Twitter [@rbuffalobills](https://twitter.com/rBuffaloBills)\n\n"
             "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n\n"
             "* Go Bills!")
