@@ -23,18 +23,18 @@ try:
     logging.info("Free-talk Friday - Beginning day of week check.")
 
     if (time.strftime('%a', time.localtime()) == "Fri"):
-        logging.info("Time to post free-talk Friday thread.")
+        logging.info("Post free-talk Friday thread.")
 
         #Authenticate
         authenticate()
         oauth_helper.refresh()
 
         #Post Thread
-        threadTitle = "Feedback, Fantasy, and Free-Talk Friday - " + time.strftime('%m/%d/%Y', time.localtime())
+        threadTitle = "Free-Talk Friday Thread - " + time.strftime('%m/%d/%Y', time.localtime())
         threadBody = (
-        "**Feedback** - Got a suggestion about what you'd like to see out of the sub? This is the place to put it; just reply to /u/BillsMod's comment for whatever you might like to say.\n\n"
-        "**Fantasy Talk** - Since fantasy threads are something we discourage across the sub, this is a place to go for some Bills-specific questions or thoughts. **/r/fantasyfootball** is still the place one should go for the best insight and higher quality or pointed discussion, but here's an in-house solution to bring up something minor.\n\n"
-        "**Free Talk** - Self-explanatory. Here if you just feel like riffing, man. How about those new red uniforms though?\n\n"
+        "**Feedback** - Got a suggestion for the mods? This is the place to put it. Just reply to /u/BillsMod's comment below.\n\n"
+        "**Fantasy Talk** - **/r/fantasyfootball** is still the place one should go for the best insight and higher quality or pointed discussion, but feel free to chat here if you wish.\n\n"
+        "**Free Talk** - Self-explanatory.\n\n"
         "As always, please adhere to our rules.  Happy Friday!"
         )
 
@@ -46,7 +46,7 @@ try:
         
         time.sleep(10)
         logging.info("Commenting on thread...")
-        submission.add_comment("**Please reply to this comment with any feedback, ideas, or suggestions you may have for the mod team about the subreddit.**").distinguish()
+        submission.add_comment("**Got a suggestion for the mods? Reply here and let us know.**").distinguish()
 
         logging.info("All done. Exiting...")
 
@@ -60,7 +60,7 @@ try:
         logging.info("Begin search for free-talk friday threads to unsticky.")
         
         for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-            if("Feedback, Fantasy, and Free-Talk Friday" in str(submission)):
+            if("Free-talk Friday" in str(submission)):
                 logging.info("Free-talk Friday thread found. Attempting to unsticky it.")
                 submission.unsticky();
 
