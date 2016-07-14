@@ -86,6 +86,9 @@ def game_thread_check():
         if ((time.mktime(game['t'])-gameDayPostThreshold <= time.time() <= time.mktime(game['t'])) and (game['gameDayPosted'] is False)):
             logging.info("A game is scheduled to start... Checking for pre-game thread to unsticky...")
             
+            authenticate()
+            oauth_helper.refresh()
+
             #Check for a pre-game thread and unsticky it if found.
             for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
                 if("Pre-Game Thread:" in str(submission)):
@@ -137,6 +140,8 @@ def game_thread_check():
 def post_game_thread_check():
     #Remove post-game threads between 6am and 7am EST only.
     if(time.localtime()[3] == 06):
+        authenticate()
+        oauth_helper.refresh()
         for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
             if("Post-Game Thread:" in str(submission)):
                 logging.info("Post-game thread found... Attempting to unsticky it...")
