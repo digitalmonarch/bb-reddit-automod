@@ -60,7 +60,7 @@ try:
         logging.info("Begin search for free-talk friday threads to unsticky.")
         
         for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-            if("Free-talk Friday" in str(submission)):
+            if("Free-Talk Friday" in str(submission)):
                 logging.info("Free-talk Friday thread found. Attempting to unsticky it.")
                 submission.unsticky();
 
