@@ -205,7 +205,7 @@ global gameThreadSubmission
 authenticate()
 
 for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-    if("Game Thread:" in str(submission)):
+    if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
         logging.info("Game thread found. Storing submission object...")
         gameThreadSubmission = submission
 
