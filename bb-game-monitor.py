@@ -16,7 +16,7 @@ def authenticate():
     global oauth_helper
     global reddit_client
     
-    logging.info("Authenticating to Reddit...")
+    logging.info("bb-game-monitor: Authenticating to Reddit...")
     reddit_client = praw.Reddit(user_agent=user_agent)
     oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
 
@@ -100,115 +100,121 @@ def cb(active, completed, diffs):
                 scoringSummaryText += "|" + s.split(' - ')[1] + "|[](/" + s.split(' - ')[0] + ")|" + s.split(' - ')[2] + "|" + s.split(' - ')[3] + "|\n"
 
             editedText += scoringSummaryText
-            editedText += ("***\n**Around the League:**\n\n"
-                "Home |Away  |Clock  |\n"
-                "---|---|----\n"
-                )
+            
+            #Don't post the Around the League scoreboxes during the last edit since the scores will stop updating after the game is over.
+            if(str(g.time).upper() != "Q4 00:00")
+                editedText += ("***\n**Around the League:**\n\n"
+                    "Home |Away  |Clock  |\n"
+                    "---|---|----\n"
+                    )
 
-            #Build a string representing scores from around the league and concat it to editedText
-            AroundTheLeagueText = ""
+                #Build a string representing scores from around the league and concat it to editedText
+                AroundTheLeagueText = ""
 
-            for g in games:
-                #print g.home, g.score_home, g.away, g.score_away, g.time
-                AroundTheLeagueText += "[](/" + g.home + ") "+ str(g.score_home) + "| [](/" + g.away + ") " + str(g.score_away) + "| " + str(g.time).upper() + "|\n"
-                    
-            editedText += AroundTheLeagueText
+                for g in active:
+                    #print g.home, g.score_home, g.away, g.score_away, g.time
+                    AroundTheLeagueText += "[](/" + g.home + ") "+ str(g.score_home) + "| [](/" + g.away + ") " + str(g.score_away) + "| " + str(g.time).upper() + "|\n"
+                        
+                editedText += AroundTheLeagueText
 
-            #Authenticate to reddit and edit the gameday post
-            logging.info("Updating game thread body...")
-            authenticate()
+            #Authenticate to reddit and update the gameday thread
+            logging.info("bb-game-monitor: Updating game thread body...")
+            #authenticate()
+            oauth_helper.refresh()
             gameThreadSubmission.edit(editedText)
 
-            #Check to see whether or not to post the post game thread.
-            #Previously did this at the 2 minute warning. time_remaining == 'Q4 02:00' or time_remaining.startswith('Q4 01')):
-            logging.info("Checking whether or not to post the post-game thread...")
-            if ("FINAL" in time_remaining):
-                logging.info("Game has ended. Check for game thread and unsticky it.")
+    #Check to see whether or not to post the post game thread.
+    #Previously did this at the 2 minute warning. time_remaining == 'Q4 02:00' or time_remaining.startswith('Q4 01')):
+    logging.info("bb-game-monitor: Checking whether or not to post the post-game thread...")
+    for g in completed:
+        if (g.home == 'BUF' or g.away == 'BUF'):
+            logging.info("bb-game-monitor: Game has ended. Find the game thread and unsticky it.")
 
-                authenticate()
+            #authenticate()
+            oauth_helper.refresh()
 
-                #Check for a game thread and unsticky it if found.
-                for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-                    if("Game Thread:" in str(submission)):
-                        logging.info("Game thread found... Attempting to unsticky it...")
-                        submission.unsticky();
+            #Check for a game thread and unsticky it if found.
+            for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
+                if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
+                    logging.info("bb-game-monitor: Game thread found... Attempting to unsticky it...")
+                    submission.unsticky();
 
-                #Post the post-game thread
-                postGameThreadTitle = "Post-Game Thread: " + g.away + " @ " + g.home + " (Week " + str(g.schedule['week']) + ")"
-                postGameThreadText = ""
+            #Post the post-game thread
+            postGameThreadTitle = "Post-Game Thread: " + g.away + " @ " + g.home + " (Week " + str(g.schedule['week']) + ")"
+            postGameThreadText = ""
 
-                if (g.winner == 'BUF'):
-                    logging.info("Bills win!!!")
-                    postGameThreadText = ("[BILLS WIN!](https://www.youtube.com/watch?v=PHbnQXsyDrE)\n\n"
-                        "* Please be mindful of our sidebar rules.\n"
-                        "* Please report any violations.\n"
-                        "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
-                        "***\n**Scoreboard:**\n\n"
-                        "***\n"
-                        "| | |\n"
-                        "---|:-:\n" + 
-                        "[](/" + g.home +") **" + home_friendlyName + "**|" + str(g.score_home) + "\n"
-                        "[](/" + g.away +") **" + away_friendlyName + "**|" + str(g.score_away) + "\n"
-                        "***\n**Team Statistics:**\n\n"
-                        "||[](/"+ g.home +")|[](/"+ g.away +")|\n"
-                        "|:--|:--:|:--:|\n"
-                        "|First Downs|" + str(g.stats_home[0]) + "|" + str(g.stats_away[0]) + "|\n"
-                        "|Total Yards|" + str(g.stats_home[1]) + "|" + str(g.stats_away[1]) + "|\n"
-                        "|Passing Yards|" + str(g.stats_home[2]) + "|" + str(g.stats_away[2]) + "|\n"
-                        "|Rushing Yards|" + str(g.stats_home[3]) + "|" + str(g.stats_away[3]) + "|\n"
-                        "|Penalties|" + str(g.stats_home[4]) + "|" + str(g.stats_away[4]) + "|\n"
-                        "|Penalty Yards|" + str(g.stats_home[5]) + "|" + str(g.stats_away[5]) + "|\n"
-                        "|Turnovers|" + str(g.stats_home[6]) + "|" + str(g.stats_away[6]) + "|\n"
-                        "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
-                        "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n")
-                else:
-                    logging.info("Bills lose...")
-                    postGameThreadText = ("[...Sad Trombone](https://www.youtube.com/watch?v=84wp_zoP5v8)\n\n"
-                        "* Please be mindful of our sidebar rules.\n"
-                        "* Please report any violations.\n"
-                        "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
-                        "***\n**Scoreboard:**\n\n"
-                        "***\n"
-                        "| | |\n"
-                        "---|:-:\n" + 
-                        "[](/" + g.home +") **" + home_friendlyName + "**|" + str(g.score_home) + "\n"
-                        "[](/" + g.away +") **" + away_friendlyName + "**|" + str(g.score_away) + "\n"
-                        "***\n**Team Statistics:**\n\n"
-                        "||[](/"+ g.home +")|[](/"+ g.away +")|\n"
-                        "|:--|:--:|:--:|\n"
-                        "|First Downs|" + str(g.stats_home[0]) + "|" + str(g.stats_away[0]) + "|\n"
-                        "|Total Yards|" + str(g.stats_home[1]) + "|" + str(g.stats_away[1]) + "|\n"
-                        "|Passing Yards|" + str(g.stats_home[2]) + "|" + str(g.stats_away[2]) + "|\n"
-                        "|Rushing Yards|" + str(g.stats_home[3]) + "|" + str(g.stats_away[3]) + "|\n"
-                        "|Penalties|" + str(g.stats_home[4]) + "|" + str(g.stats_away[4]) + "|\n"
-                        "|Penalty Yards|" + str(g.stats_home[5]) + "|" + str(g.stats_away[5]) + "|\n"
-                        "|Turnovers|" + str(g.stats_home[6]) + "|" + str(g.stats_away[6]) + "|\n"
-                        "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
-                        "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n" )
+            if (g.winner == 'BUF'):
+                logging.info("bb-game-monitor: Bills win!!!")
+                postGameThreadText = ("[BILLS WIN!](https://www.youtube.com/watch?v=PHbnQXsyDrE)\n\n"
+                    "* Please be mindful of our sidebar rules.\n"
+                    "* Please report any violations.\n"
+                    "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
+                    "***\n**Scoreboard:**\n\n"
+                    "***\n"
+                    "| | |\n"
+                    "---|:-:\n" + 
+                    "[](/" + g.home +") **" + home_friendlyName + "**|" + str(g.score_home) + "\n"
+                    "[](/" + g.away +") **" + away_friendlyName + "**|" + str(g.score_away) + "\n"
+                    "***\n**Team Statistics:**\n\n"
+                    "||[](/"+ g.home +")|[](/"+ g.away +")|\n"
+                    "|:--|:--:|:--:|\n"
+                    "|First Downs|" + str(g.stats_home[0]) + "|" + str(g.stats_away[0]) + "|\n"
+                    "|Total Yards|" + str(g.stats_home[1]) + "|" + str(g.stats_away[1]) + "|\n"
+                    "|Passing Yards|" + str(g.stats_home[2]) + "|" + str(g.stats_away[2]) + "|\n"
+                    "|Rushing Yards|" + str(g.stats_home[3]) + "|" + str(g.stats_away[3]) + "|\n"
+                    "|Penalties|" + str(g.stats_home[4]) + "|" + str(g.stats_away[4]) + "|\n"
+                    "|Penalty Yards|" + str(g.stats_home[5]) + "|" + str(g.stats_away[5]) + "|\n"
+                    "|Turnovers|" + str(g.stats_home[6]) + "|" + str(g.stats_away[6]) + "|\n"
+                    "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
+                    "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n")
+            else:
+                logging.info("bb-game-monitor: Bills lose...")
+                postGameThreadText = ("[...Sad Trombone](https://www.youtube.com/watch?v=84wp_zoP5v8)\n\n"
+                    "* Please be mindful of our sidebar rules.\n"
+                    "* Please report any violations.\n"
+                    "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
+                    "***\n**Scoreboard:**\n\n"
+                    "***\n"
+                    "| | |\n"
+                    "---|:-:\n" + 
+                    "[](/" + g.home +") **" + home_friendlyName + "**|" + str(g.score_home) + "\n"
+                    "[](/" + g.away +") **" + away_friendlyName + "**|" + str(g.score_away) + "\n"
+                    "***\n**Team Statistics:**\n\n"
+                    "||[](/"+ g.home +")|[](/"+ g.away +")|\n"
+                    "|:--|:--:|:--:|\n"
+                    "|First Downs|" + str(g.stats_home[0]) + "|" + str(g.stats_away[0]) + "|\n"
+                    "|Total Yards|" + str(g.stats_home[1]) + "|" + str(g.stats_away[1]) + "|\n"
+                    "|Passing Yards|" + str(g.stats_home[2]) + "|" + str(g.stats_away[2]) + "|\n"
+                    "|Rushing Yards|" + str(g.stats_home[3]) + "|" + str(g.stats_away[3]) + "|\n"
+                    "|Penalties|" + str(g.stats_home[4]) + "|" + str(g.stats_away[4]) + "|\n"
+                    "|Penalty Yards|" + str(g.stats_home[5]) + "|" + str(g.stats_away[5]) + "|\n"
+                    "|Turnovers|" + str(g.stats_home[6]) + "|" + str(g.stats_away[6]) + "|\n"
+                    "|Punts|" + str(g.stats_home[7]) + "|" + str(g.stats_away[7]) + "|\n"
+                    "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n" )
 
-                logging.info("Posting post game thread...")
-                submission = reddit_client.submit(subreddit, postGameThreadTitle, postGameThreadText)
+            logging.info("bb-game-monitor: Posting post game thread...")
+            submission = reddit_client.submit(subreddit, postGameThreadTitle, postGameThreadText)
 
-                #Sticky the thread
-                logging.info("Stickying the thread...")
-                submission.sticky()
-                logging.info("Update complete. Exiting game monitor...")
+            #Sticky the thread
+            logging.info("bb-game-monitor: Stickying the thread...")
+            submission.sticky()
+            logging.info("bb-game-monitor: Update complete. Exiting game monitor...")
 
-                exit()
+            exit()
 
-logging.info("bb-game-monitor is starting...")
+logging.info("bb-game-monitor: bb-game-monitor is starting...")
 
 #Get the game thread submission object and store it in a global variable.
-logging.info("Begin search for game thread submission object...")
+logging.info("bb-game-monitor: Begin search for game thread submission object...")
 global gameThreadSubmission
 
 authenticate()
 
 for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
     if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
-        logging.info("Game thread found. Storing submission object...")
+        logging.info("bb-game-monitor: Game thread found. Storing submission object...")
         gameThreadSubmission = submission
 
 #Begin monitoring the game.
-logging.info("Beginning monitoring...")
-nflgame.live.run(cb)
+logging.info("bb-game-monitor: Beginning monitoring...")
+nflgame.live.run(cb, active_interval=30)

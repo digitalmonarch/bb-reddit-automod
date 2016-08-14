@@ -8,12 +8,12 @@ import os
 
 def load_games():
     #Open the DB and load of all the possible keys into a collection called 'keys'
-    logging.info("Opening local database...")
+    logging.info("bb-game-thread-poster: Opening local database...")
     schedule = shelve.open(db_path)
     keys = schedule.keys()
 
     #For each key in the collection which has not yet been posted, load pertinant game data into memory
-    logging.info("Loading future games into memory...")
+    logging.info("bb-game-thread-poster: Loading future games into memory...")
     del remainingGames[:]
     for key in keys:
         entry = schedule[key]
@@ -44,7 +44,7 @@ def authenticate():
     global oauth_helper
     global reddit_client
     
-    logging.info("Authenticating to Reddit...")
+    logging.info("bb-game-thread-poster: Authenticating to Reddit...")
     reddit_client = praw.Reddit(user_agent=user_agent)
     oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
 
@@ -54,9 +54,8 @@ def pre_game_thread_check():
 
         #Post the pre-game thread on or after 8am on the day of the game
         if ((game['t'][0] == time.localtime()[0] and game['t'][1] == time.localtime()[1] and game['t'][2] == time.localtime()[2] and time.localtime()[3] >= 8) and (game['preGamePosted'] is False)):
-            logging.info("A game is scheduled today. Posting pregame thread...")
+            logging.info("bb-game-thread-poster: A game is scheduled today. Posting pregame thread...")
             authenticate()
-            oauth_helper.refresh()
             submission = reddit_client.submit(subreddit, game['preGameThreadTitle'], text="Go Bills!")
             url = submission.url.replace("reddit.com","reddit-stream.com",1)
             editedText = ("* Use [Reddit-Stream]("+ url + ") to follow comments on this post in real-time.\n\n"
@@ -64,7 +63,7 @@ def pre_game_thread_check():
             submission.edit(editedText)
             
             #Update the database to indicate that this thread has been posted
-            logging.info("Updating preGamePosted value for this game record...")
+            logging.info("bb-game-thread-poster: Updating preGamePosted value for this game record...")
             schedule = shelve.open(db_path)
             entry = schedule[game['key']]
             entry['preGamePosted'] = True
@@ -73,10 +72,10 @@ def pre_game_thread_check():
             schedule.close()
             
             #Sticky the thread
-            logging.info("Stickying the thread")
+            logging.info("bb-game-thread-poster: Stickying the thread")
             submission.sticky()
             
-            logging.info("Pre-game thread logic complete....")
+            logging.info("bb-game-thread-poster: Pre-game thread logic complete....")
 
 def game_thread_check():
     for game in remainingGames:
@@ -84,21 +83,18 @@ def game_thread_check():
         
         #Post the game-thread if within the post threshold.
         if ((time.mktime(game['t'])-gameDayPostThreshold <= time.time() <= time.mktime(game['t'])) and (game['gameDayPosted'] is False)):
-            logging.info("A game is scheduled to start... Checking for pre-game thread to unsticky...")
+            logging.info("bb-game-thread-poster: A game is scheduled to start... Checking for pre-game thread to unsticky...")
             
             authenticate()
-            oauth_helper.refresh()
 
             #Check for a pre-game thread and unsticky it if found.
             for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
                 if("Pre-Game Thread:" in str(submission)):
-                    logging.info("Pre-game thread found... Attempting to unsticky it...")
+                    logging.info("bb-game-thread-poster: Pre-game thread found... Attempting to unsticky it...")
                     submission.unsticky();
 
             #Post the gameday thread
-            logging.info("Posting gameday thread...")
-            authenticate()
-            oauth_helper.refresh()
+            logging.info("bb-game-thread-poster: Posting gameday thread...")
             submission = reddit_client.submit(subreddit, game['gameDayThreadTitle'], 
                 text=("* Please be mindful of our sidebar rules.\n\n"
                 "* Please report any violations.\n\n"
@@ -115,7 +111,7 @@ def game_thread_check():
             submission.edit(editedText)
             
             #Update the database to indicate that this thread has been posted
-            logging.info("Updating gameDayPosted value for this game record...")
+            logging.info("bb-game-thread-poster: Updating gameDayPosted value for this game record...")
             schedule = shelve.open(db_path)
             entry = schedule[game['key']]
             entry['gameDayPosted'] = True
@@ -124,15 +120,15 @@ def game_thread_check():
             schedule.close()
 
             #Sticky the thread
-            logging.info("Stickying the thread")
+            logging.info("bb-game-thread-poster: Stickying the thread")
             submission.sticky()
 
             #Set suggested sort to New
-            logging.info("Setting suggested sort")
+            logging.info("bb-game-thread-poster: Setting suggested sort")
             submission.set_suggested_sort(sort='new')
 
             #Begin monitoring the game
-            logging.info("Starting game monitor")
+            logging.info("bb-game-thread-poster: Starting game monitor")
             os.system("python " + monitor_path + " &")
 
             logging.info ("Update complete")
@@ -141,10 +137,9 @@ def post_game_thread_check():
     #Remove post-game threads between 6am and 7am EST only.
     if(time.localtime()[3] == 06):
         authenticate()
-        oauth_helper.refresh()
         for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
             if("Post-Game Thread:" in str(submission)):
-                logging.info("Post-game thread found... Attempting to unsticky it...")
+                logging.info("bb-game-thread-poster: Post-game thread found... Attempting to unsticky it...")
                 submission.unsticky();
             
 try:
@@ -163,19 +158,19 @@ try:
     load_games()
 
     #Check for pre-game threads
-    logging.info("Checking for pre-game threads...")
+    logging.info("bb-game-thread-poster: Checking for pre-game threads...")
     pre_game_thread_check()
 
     #Check for game threads
-    logging.info("Checking for game threads...")
+    logging.info("bb-game-thread-poster: Checking for game threads...")
     game_thread_check()
     
-    #Check for post-game threads after midnight.
-    logging.info("Checking for post-game threads...")
+    #Check for post-game threads after 6am.
+    logging.info("bb-game-thread-poster: Checking for post-game threads...")
     post_game_thread_check()
 
     #If no threads were posted. Log a message and exit.
     if postedSomething is False:
-        logging.info("Nothing to do. Exiting.")
+        logging.info("bb-game-thread-poster: Nothing to do. Exiting.")
 except:
     logging.exception("EXCEPTON OCCURRED")
