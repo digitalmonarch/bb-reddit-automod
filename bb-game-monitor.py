@@ -102,7 +102,7 @@ def cb(active, completed, diffs):
             editedText += scoringSummaryText
             
             #Don't post the Around the League scoreboxes during the last edit since the scores will stop updating after the game is over.
-            if(str(g.time).upper() != "Q4 00:00")
+            if(str(g.time).upper() != "Q4 00:00"):
                 editedText += ("***\n**Around the League:**\n\n"
                     "Home |Away  |Clock  |\n"
                     "---|---|----\n"
@@ -128,7 +128,20 @@ def cb(active, completed, diffs):
     logging.info("bb-game-monitor: Checking whether or not to post the post-game thread...")
     for g in completed:
         if (g.home == 'BUF' or g.away == 'BUF'):
+
+            #Log this visit
+            time_remaining = str(g.time)
+            gameInfo = '%s :: %s (%d) vs. %s (%d)' % (time_remaining, g.home, g.score_home, g.away, g.score_away)
+            logging.info(gameInfo)
+
             logging.info("bb-game-monitor: Game has ended. Find the game thread and unsticky it.")
+
+            #Define the friendly names of both teams
+            for t in nflgame.teams:
+                if t[0] == g.home:
+                    home_friendlyName = t[3]
+                elif t[0] == g.away:
+                    away_friendlyName = t[3]
 
             #authenticate()
             oauth_helper.refresh()
@@ -202,7 +215,7 @@ def cb(active, completed, diffs):
 
             exit()
 
-logging.info("bb-game-monitor: bb-game-monitor is starting...")
+logging.info("bb-game-monitor: Starting bb-game-monitor...")
 
 #Get the game thread submission object and store it in a global variable.
 logging.info("bb-game-monitor: Begin search for game thread submission object...")
