@@ -27,7 +27,7 @@ def cb(active, completed, diffs):
             
             #Log this visit
             time_remaining = str(g.time)
-            gameInfo = '%s :: %s (%d) vs. %s (%d)' % (time_remaining, g.home, g.score_home, g.away, g.score_away)
+            gameInfo = 'bb-game-monitor: %s :: %s (%d) vs. %s (%d)' % (time_remaining, g.home, g.score_home, g.away, g.score_away)
             logging.info(gameInfo)
 
             #Define the friendly names of both teams
@@ -79,15 +79,26 @@ def cb(active, completed, diffs):
                 "***\n**Top Performers:**\n\n"
                 "| | | | | | |\n"
                 "| :--: | :-- | :--: | :--: | :--: | :--: |\n"
-                "| **Passing** | **Name**  | **Cmp/Att** | **Yds** | **TDs** | **Ints** |\n"
-                "|[](/" + g.home + ")|" + str(homePassing[0]) + "|" + str(homePassing[0].passing_cmp) + "/" + str(homePassing[0].passing_att) + "|" + str(homePassing[0].passing_yds) + "|" + str(homePassing[0].passing_tds) + "|" + str(homePassing[0].passing_int) + "|\n"
-                "|[](/" + g.away + ")|" + str(awayPassing[0]) + "|" + str(awayPassing[0].passing_cmp) + "/" + str(awayPassing[0].passing_att) + "|" + str(awayPassing[0].passing_yds) + "|" + str(awayPassing[0].passing_tds) + "|" + str(awayPassing[0].passing_int) + "|\n"
-                "| **Rushing** | **Name**  | **Car** | **Yds** | **TDs** | **Fum** |\n"
-                "|[](/" + g.home + ")|" + str(homeRushing[0]) + "|" + str(homeRushing[0].rushing_att) + "|" + str(homeRushing[0].rushing_yds) + "|" + str(homeRushing[0].rushing_tds) + "|" + str(homeRushing[0].fumbles_lost) + "|\n"
-                "|[](/" + g.away + ")|" + str(awayRushing[0]) + "|" + str(awayRushing[0].rushing_att) + "|" + str(awayRushing[0].rushing_yds) + "|" + str(awayRushing[0].rushing_tds) + "|" + str(awayRushing[0].fumbles_lost) + "|\n"
-                "| **Receiving** | **Name**  | **Rec** | **Yds** | **TDs** | **Fum** |\n"
-                "|[](/" + g.home + ")|" + str(homeReceiving[0]) + "|" + str(homeReceiving[0].receiving_rec) + "|" + str(homeReceiving[0].receiving_yds) + "|" + str(homeReceiving[0].receiving_tds) + "|" + str(homeReceiving[0].fumbles_lost) + "|\n"
-                "|[](/" + g.away + ")|" + str(awayReceiving[0]) + "|" + str(awayReceiving[0].receiving_rec) + "|" + str(awayReceiving[0].receiving_yds) + "|" + str(awayReceiving[0].receiving_tds) + "|" + str(awayReceiving[0].fumbles_lost) + "|\n"
+                )
+            if(len(homePassing>0) and len(awayPassing>0)):
+                editedText+=(
+                    "| **Passing** | **Name**  | **Cmp/Att** | **Yds** | **TDs** | **Ints** |\n"
+                    "|[](/" + g.home + ")|" + str(homePassing[0]) + "|" + str(homePassing[0].passing_cmp) + "/" + str(homePassing[0].passing_att) + "|" + str(homePassing[0].passing_yds) + "|" + str(homePassing[0].passing_tds) + "|" + str(homePassing[0].passing_int) + "|\n"
+                    "|[](/" + g.away + ")|" + str(awayPassing[0]) + "|" + str(awayPassing[0].passing_cmp) + "/" + str(awayPassing[0].passing_att) + "|" + str(awayPassing[0].passing_yds) + "|" + str(awayPassing[0].passing_tds) + "|" + str(awayPassing[0].passing_int) + "|\n"
+                    )
+            if(len(homeRushing>0) and len(awayRushing>0)):
+                editedText+=(
+                    "| **Rushing** | **Name**  | **Car** | **Yds** | **TDs** | **Fum** |\n"
+                    "|[](/" + g.home + ")|" + str(homeRushing[0]) + "|" + str(homeRushing[0].rushing_att) + "|" + str(homeRushing[0].rushing_yds) + "|" + str(homeRushing[0].rushing_tds) + "|" + str(homeRushing[0].fumbles_lost) + "|\n"
+                    "|[](/" + g.away + ")|" + str(awayRushing[0]) + "|" + str(awayRushing[0].rushing_att) + "|" + str(awayRushing[0].rushing_yds) + "|" + str(awayRushing[0].rushing_tds) + "|" + str(awayRushing[0].fumbles_lost) + "|\n"
+                    )
+            if(len(homeReceiving>0) and len(awayReceiving>0)):
+                editedText+=(
+                    "| **Receiving** | **Name**  | **Rec** | **Yds** | **TDs** | **Fum** |\n"
+                    "|[](/" + g.home + ")|" + str(homeReceiving[0]) + "|" + str(homeReceiving[0].receiving_rec) + "|" + str(homeReceiving[0].receiving_yds) + "|" + str(homeReceiving[0].receiving_tds) + "|" + str(homeReceiving[0].fumbles_lost) + "|\n"
+                    "|[](/" + g.away + ")|" + str(awayReceiving[0]) + "|" + str(awayReceiving[0].receiving_rec) + "|" + str(awayReceiving[0].receiving_yds) + "|" + str(awayReceiving[0].receiving_tds) + "|" + str(awayReceiving[0].fumbles_lost) + "|\n"
+                    )
+            editedText+=(
                 "***\n**Scoring Summary:**\n\n"
                 "| **Qtr** | **Team** |**Type** | **Description**|\n"
                 "| :--: | :--: | :--: | :-- |\n"
@@ -182,7 +193,7 @@ def cb(active, completed, diffs):
                     "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n")
             else:
                 logging.info("bb-game-monitor: Bills lose...")
-                postGameThreadText = ("[...Sad Trombone](https://www.youtube.com/watch?v=84wp_zoP5v8)\n\n"
+                postGameThreadText = ("[Bills Lose... :(](https://www.youtube.com/watch?v=yJxCdh1Ps48)\n\n"
                     "* Please be mindful of our sidebar rules.\n"
                     "* Please report any violations.\n"
                     "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
