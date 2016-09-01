@@ -80,19 +80,19 @@ def cb(active, completed, diffs):
                 "| | | | | | |\n"
                 "| :--: | :-- | :--: | :--: | :--: | :--: |\n"
                 )
-            if(len(homePassing>0) and len(awayPassing>0)):
+            if(homePassing and awayPassing):
                 editedText+=(
                     "| **Passing** | **Name**  | **Cmp/Att** | **Yds** | **TDs** | **Ints** |\n"
                     "|[](/" + g.home + ")|" + str(homePassing[0]) + "|" + str(homePassing[0].passing_cmp) + "/" + str(homePassing[0].passing_att) + "|" + str(homePassing[0].passing_yds) + "|" + str(homePassing[0].passing_tds) + "|" + str(homePassing[0].passing_int) + "|\n"
                     "|[](/" + g.away + ")|" + str(awayPassing[0]) + "|" + str(awayPassing[0].passing_cmp) + "/" + str(awayPassing[0].passing_att) + "|" + str(awayPassing[0].passing_yds) + "|" + str(awayPassing[0].passing_tds) + "|" + str(awayPassing[0].passing_int) + "|\n"
                     )
-            if(len(homeRushing>0) and len(awayRushing>0)):
+            if(homeRushing and awayRushing):
                 editedText+=(
                     "| **Rushing** | **Name**  | **Car** | **Yds** | **TDs** | **Fum** |\n"
                     "|[](/" + g.home + ")|" + str(homeRushing[0]) + "|" + str(homeRushing[0].rushing_att) + "|" + str(homeRushing[0].rushing_yds) + "|" + str(homeRushing[0].rushing_tds) + "|" + str(homeRushing[0].fumbles_lost) + "|\n"
                     "|[](/" + g.away + ")|" + str(awayRushing[0]) + "|" + str(awayRushing[0].rushing_att) + "|" + str(awayRushing[0].rushing_yds) + "|" + str(awayRushing[0].rushing_tds) + "|" + str(awayRushing[0].fumbles_lost) + "|\n"
                     )
-            if(len(homeReceiving>0) and len(awayReceiving>0)):
+            if(homeReceiving and awayReceiving):
                 editedText+=(
                     "| **Receiving** | **Name**  | **Rec** | **Yds** | **TDs** | **Fum** |\n"
                     "|[](/" + g.home + ")|" + str(homeReceiving[0]) + "|" + str(homeReceiving[0].receiving_rec) + "|" + str(homeReceiving[0].receiving_yds) + "|" + str(homeReceiving[0].receiving_tds) + "|" + str(homeReceiving[0].fumbles_lost) + "|\n"
