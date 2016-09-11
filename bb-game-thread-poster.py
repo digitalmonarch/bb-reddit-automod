@@ -172,5 +172,6 @@ try:
     #If no threads were posted. Log a message and exit.
     if postedSomething is False:
         logging.info("bb-game-thread-poster: Nothing to do. Exiting.")
+        
 except:
-    logging.exception("EXCEPTON OCCURRED")
+    logging.exception("bb-game-thread-poster: EXCEPTON OCCURRED")

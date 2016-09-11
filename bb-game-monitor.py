@@ -5,12 +5,6 @@ import logging
 import praw
 from prawoauth2 import PrawOAuth2Mini
 
-#Load bot settings
-from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path)
-
-#Configure logging
-logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
-
 #Reddit Authentication
 def authenticate():
     global oauth_helper
@@ -226,19 +220,29 @@ def cb(active, completed, diffs):
 
             exit()
 
-logging.info("bb-game-monitor: Starting bb-game-monitor...")
+try:
+    #Load bot settings
+    from settings import (app_key, app_secret, access_token, refresh_token, user_agent, scopes, subreddit, log_path, db_path)
 
-#Get the game thread submission object and store it in a global variable.
-logging.info("bb-game-monitor: Begin search for game thread submission object...")
-global gameThreadSubmission
+    #Configure logging
+    logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y @ %H:%M :', level=logging.INFO)
 
-authenticate()
+    logging.info("bb-game-monitor: Starting bb-game-monitor...")
 
-for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-    if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
-        logging.info("bb-game-monitor: Game thread found. Storing submission object...")
-        gameThreadSubmission = submission
+    #Get the game thread submission object and store it in a global variable.
+    logging.info("bb-game-monitor: Begin search for game thread submission object...")
+    global gameThreadSubmission
 
-#Begin monitoring the game.
-logging.info("bb-game-monitor: Beginning monitoring...")
-nflgame.live.run(cb, active_interval=30)
+    authenticate()
+
+    for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
+        if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
+            logging.info("bb-game-monitor: Game thread found. Storing submission object...")
+            gameThreadSubmission = submission
+
+    #Begin monitoring the game.
+    logging.info("bb-game-monitor: Beginning monitoring...")
+    nflgame.live.run(cb, active_interval=30)
+
+except:
+    logging.exception("bb-game-monitor: EXCEPTON OCCURRED")
