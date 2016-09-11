@@ -129,7 +129,16 @@ def game_thread_check():
 
             #Begin monitoring the game
             logging.info("bb-game-thread-poster: Starting game monitor")
-            os.system("python " + monitor_path + " &")
+            
+            error=True
+            
+            while error:
+                try:
+                    os.system("python " + monitor_path + " &")
+                    error=False
+                except:
+                    logging.exception("bb-tame-thread-poster: bb-game-monitor.py has crashed. Restarting.")
+                    error=True
 
             logging.info ("Update complete")
 

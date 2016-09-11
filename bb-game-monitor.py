@@ -3,6 +3,7 @@ import nflgame.live
 import nflgame.game
 import logging
 import praw
+import os
 from prawoauth2 import PrawOAuth2Mini
 
 #Reddit Authentication
@@ -218,7 +219,7 @@ def cb(active, completed, diffs):
             submission.sticky()
             logging.info("bb-game-monitor: Update complete. Exiting game monitor...")
 
-            exit()
+            os._exit(1)
 
 try:
     #Load bot settings
