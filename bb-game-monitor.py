@@ -4,6 +4,7 @@ import nflgame.game
 import logging
 import praw
 import os
+import time
 from prawoauth2 import PrawOAuth2Mini
 
 #Reddit Authentication
@@ -14,6 +15,12 @@ def authenticate():
     logging.info("bb-game-monitor: Authenticating to Reddit...")
     reddit_client = praw.Reddit(user_agent=user_agent)
     oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
+
+def getSubmission():
+    for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
+        if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
+            logging.info("bb-game-monitor: Game thread found. Storing submission object...")
+            gameThreadSubmission = submission
 
 #Callback function
 def cb(active, completed, diffs):
@@ -232,14 +239,17 @@ try:
 
     #Get the game thread submission object and store it in a global variable.
     logging.info("bb-game-monitor: Begin search for game thread submission object...")
-    global gameThreadSubmission
-
+    
     authenticate()
+    
+    #Initialize gameThreadSubmission to None so that we can re-try the search if necessary.
+    global gameThreadSubmission = None
+    getSubmission()
 
-    for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-        if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
-            logging.info("bb-game-monitor: Game thread found. Storing submission object...")
-            gameThreadSubmission = submission
+    while (gameThreadSubmission is None):
+        logging.info("bb-game-monitor: Game thread not found. Will try again in 30 seconds...")
+        time.wait(30)
+        getSubmission()
 
     #Begin monitoring the game.
     logging.info("bb-game-monitor: Beginning monitoring...")
