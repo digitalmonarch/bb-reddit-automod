@@ -177,7 +177,7 @@ def cb(active, completed, diffs):
                     "* Please be mindful of our sidebar rules.\n"
                     "* Please report any violations.\n"
                     "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
-                    "***\n**Scoreboard:**\n\n"
+                    "\n**Scoreboard:**\n\n"
                     "***\n"
                     "| | |\n"
                     "---|:-:\n" + 
@@ -201,7 +201,7 @@ def cb(active, completed, diffs):
                     "* Please be mindful of our sidebar rules.\n"
                     "* Please report any violations.\n"
                     "* Self-posts will be removed so that discussion is contained within our official gameday threads. This helps to prevent topic duplciation and fragmentation of the conversation.\n"
-                    "***\n**Scoreboard:**\n\n"
+                    "\n**Scoreboard:**\n\n"
                     "***\n"
                     "| | |\n"
                     "---|:-:\n" + 
