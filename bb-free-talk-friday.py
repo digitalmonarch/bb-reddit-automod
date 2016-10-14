@@ -29,10 +29,10 @@ try:
         authenticate()
 
         #Post Thread
-        threadTitle = "Free-Talk Friday Thread - " + time.strftime('%m/%d/%Y', time.localtime())
+        threadTitle = "Free-Talk Friday - " + time.strftime('%m/%d/%Y', time.localtime())
         threadBody = (
         "**Feedback** - Got a suggestion for the mods? This is the place to put it. Just reply to /u/BillsMod's comment below.\n\n"
-        "**Fantasy Talk** - **/r/fantasyfootball** is still the place one should go for the best insight and higher quality or pointed discussion, but feel free to chat here if you wish.\n\n"
+        "**Fantasy Football** - **/r/fantasyfootball** is still the place one should go for the best insight and higher quality or pointed discussion, but feel free to chat here if you wish.\n\n"
         "**Free Talk** - Self-explanatory.\n\n"
         "As always, please adhere to our rules.  Happy Friday!"
         )
