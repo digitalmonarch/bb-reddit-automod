@@ -127,6 +127,12 @@ def game_thread_check():
             logging.info("bb-game-thread-poster: Setting suggested sort")
             submission.set_suggested_sort(sort='new')
 
+            #Add a comment to the thread
+            logging.info("bb-game-thread-poster: Waiting 5 seconds...")
+            time.sleep(5)
+            logging.info("bb-game-thread-poster: Commenting on thread...")
+            submission.add_comment("**Notice:** In an effort to ensure that /r/buffalobills remains a pleasant place to discuss the game, the moderation team will use reasonable discretion to remove comments which do not add to the conversation or are excessively negative.").distinguish()
+
             #Begin monitoring the game
             logging.info("bb-game-thread-poster: Starting game monitor")
             
