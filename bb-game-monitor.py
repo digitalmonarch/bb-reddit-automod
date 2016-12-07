@@ -240,8 +240,12 @@ def cb(active, completed, diffs):
             #Sticky the thread
             logging.info("bb-game-monitor: Stickying the thread...")
             submission.mod.sticky(state=True)
-            logging.info("bb-game-monitor: Update complete. Exiting game monitor...")
+            
+            logging.info("bb-game-monitor: Waiting 30 minutes before re-enabling self posts...")
+            time.sleep(1800)
+            reddit_client.subreddit(subreddit).mod.update(link_type="any")
 
+            logging.info("bb-game-monitor: Update complete. Exiting game monitor...")
             os._exit(1)
 
 try:

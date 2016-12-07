@@ -135,6 +135,10 @@ def game_thread_check():
             logging.info("bb-game-thread-poster: Commenting on thread...")
             reddit_client.subreddit(subreddit).mod.distinguish(submission.reply("**Notice:** In an effort to ensure that /r/buffalobills remains a pleasant place to discuss the game, the moderation team will use reasonable discretion to remove comments which do not add to the conversation or are excessively negative."), how='yes')
 
+            #Disable self-posts for the duration of the game
+            logging.info("bb-game-thread-poster: Disabling self-posts until 30 minutes after the completion of the game...")
+            reddit_client.subreddit(subreddit).mod.update(link_type="link")
+
             #Begin monitoring the game
             logging.info("bb-game-thread-poster: Starting game monitor")
             
@@ -182,7 +186,7 @@ try:
     logging.info("bb-game-thread-poster: Checking for game threads...")
     game_thread_check()
     
-    #Check for post-game threads after 6am.
+    #Check for post-game threads after 6am and unsticky them.
     logging.info("bb-game-thread-poster: Checking for post-game threads...")
     post_game_thread_check()
 
