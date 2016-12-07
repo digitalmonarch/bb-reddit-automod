@@ -5,22 +5,22 @@ import logging
 import praw
 import os
 import time
-from prawoauth2 import PrawOAuth2Mini
+#from prawoauth2 import PrawOAuth2Mini
 
 #Reddit Authentication
 def authenticate():
-    global oauth_helper
+    #global oauth_helper
     global reddit_client
     
     logging.info("bb-game-monitor: Authenticating to Reddit...")
-    reddit_client = praw.Reddit(user_agent=user_agent)
-    oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
+    reddit_client = praw.Reddit(user_agent=user_agent, client_id=app_key, client_secret=app_secret, refresh_token=refresh_token)
+    #oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
 
 def getSubmission():
     global gameThreadSubmission
     gameThreadSubmission = None
-    for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-        if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
+    for submission in reddit_client.subreddit(subreddit).hot(limit=2):
+        if("Game Thread:" in submission.title and "Pre-Game" not in submission.title):
             logging.info("bb-game-monitor: Game thread found. Storing submission object...")
             gameThreadSubmission = submission
 
@@ -141,7 +141,7 @@ def cb(active, completed, diffs):
             #Authenticate to reddit and update the gameday thread
             logging.info("bb-game-monitor: Updating game thread body...")
             #authenticate()
-            oauth_helper.refresh()
+            #oauth_helper.refresh()
             gameThreadSubmission.edit(editedText)
 
     #Check to see whether or not to post the post game thread.
@@ -172,13 +172,13 @@ def cb(active, completed, diffs):
                     away_friendlyName = t[3]
 
             #authenticate()
-            oauth_helper.refresh()
+            #oauth_helper.refresh()
 
             #Check for a game thread and unsticky it if found.
-            for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-                if("Game Thread:" in str(submission) and "Pre-Game" not in str(submission)):
+            for submission in reddit_client.subreddit(subreddit).hot(limit=2):
+                if("Game Thread:" in submission.title and "Pre-Game" not in submission.title):
                     logging.info("bb-game-monitor: Game thread found... Attempting to unsticky it...")
-                    submission.unsticky();
+                    submission.mod.sticky(state=False);
 
             #Post the post-game thread
             postGameThreadTitle = "Post-Game Thread: " + g.away + " @ " + g.home + " (Week " + str(g.schedule['week']) + ")"
@@ -234,11 +234,12 @@ def cb(active, completed, diffs):
                     "|Time of Possession|" + str(g.stats_home[10]) + "|" + str(g.stats_away[10]) + "|\n" )
 
             logging.info("bb-game-monitor: Posting post game thread...")
-            submission = reddit_client.submit(subreddit, postGameThreadTitle, postGameThreadText)
+            submission = reddit_client.subreddit(subreddit).submit(postGameThreadTitle, postGameThreadText)
+            #submission = reddit_client.submit(subreddit, postGameThreadTitle, postGameThreadText)
 
             #Sticky the thread
             logging.info("bb-game-monitor: Stickying the thread...")
-            submission.sticky()
+            submission.mod.sticky(state=True)
             logging.info("bb-game-monitor: Update complete. Exiting game monitor...")
 
             os._exit(1)

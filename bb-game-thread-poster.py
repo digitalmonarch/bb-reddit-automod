@@ -3,7 +3,7 @@ import shelve
 import praw
 import time
 import logging
-from prawoauth2 import PrawOAuth2Mini
+#from prawoauth2 import PrawOAuth2Mini
 import os
 
 def load_games():
@@ -41,12 +41,12 @@ def load_games():
 
 #Reddit Authentication
 def authenticate():
-    global oauth_helper
+    #global oauth_helper
     global reddit_client
     
     logging.info("bb-game-thread-poster: Authenticating to Reddit...")
-    reddit_client = praw.Reddit(user_agent=user_agent)
-    oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
+    reddit_client = praw.Reddit(user_agent=user_agent, client_id=app_key, client_secret=app_secret, refresh_token=refresh_token)
+    #oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
 
 def pre_game_thread_check():
     for game in remainingGames:
@@ -56,7 +56,8 @@ def pre_game_thread_check():
         if ((game['t'][0] == time.localtime()[0] and game['t'][1] == time.localtime()[1] and game['t'][2] == time.localtime()[2] and time.localtime()[3] >= 8) and (game['preGamePosted'] is False)):
             logging.info("bb-game-thread-poster: A game is scheduled today. Posting pregame thread...")
             authenticate()
-            submission = reddit_client.submit(subreddit, game['preGameThreadTitle'], text="Go Bills!")
+            submission = reddit_client.subreddit(subreddit).submit(game['preGameThreadTitle'], selftext="Go Bills!")
+            #submission = reddit_client.submit(subreddit, game['preGameThreadTitle'], text="Go Bills!")
             url = submission.url.replace("reddit.com","reddit-stream.com",1)
             editedText = ("* Use [Reddit-Stream]("+ url + ") to follow comments on this post in real-time.\n\n"
             "* Go Bills!")
@@ -73,7 +74,7 @@ def pre_game_thread_check():
             
             #Sticky the thread
             logging.info("bb-game-thread-poster: Stickying the thread")
-            submission.sticky()
+            submission.mod.sticky(state=True)
             
             logging.info("bb-game-thread-poster: Pre-game thread logic complete....")
 
@@ -88,15 +89,16 @@ def game_thread_check():
             authenticate()
 
             #Check for a pre-game thread and unsticky it if found.
-            for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-                if("Pre-Game Thread:" in str(submission)):
+            for submission in reddit_client.subreddit(subreddit).hot(limit=2):
+                if("Pre-Game Thread:" in submission.title):
                     logging.info("bb-game-thread-poster: Pre-game thread found... Attempting to unsticky it...")
-                    submission.unsticky();
+                    submission.mod.sticky(state=False);
 
             #Post the gameday thread
             logging.info("bb-game-thread-poster: Posting gameday thread...")
-            submission = reddit_client.submit(subreddit, game['gameDayThreadTitle'], 
-                text=("* Please be mindful of our sidebar rules.\n\n"
+            #submission = reddit_client.submit(subreddit, game['gameDayThreadTitle'], 
+            submission = reddit_client.subreddit(subreddit).submit(game['gameDayThreadTitle'], 
+                selftext=("* Please be mindful of our sidebar rules.\n\n"
                 "* Please report any violations.\n\n"
                 "* Self-post threads are subject to deletion during and after the game.\n\n"
                 "* Go Bills!"))
@@ -121,17 +123,17 @@ def game_thread_check():
 
             #Sticky the thread
             logging.info("bb-game-thread-poster: Stickying the thread")
-            submission.sticky()
+            submission.mod.sticky(state=True)
 
             #Set suggested sort to New
             logging.info("bb-game-thread-poster: Setting suggested sort")
-            submission.set_suggested_sort(sort='new')
+            submission.mod.suggested_sort = 'new'
 
             #Add a comment to the thread
             logging.info("bb-game-thread-poster: Waiting 5 seconds...")
             time.sleep(5)
             logging.info("bb-game-thread-poster: Commenting on thread...")
-            submission.add_comment("**Notice:** In an effort to ensure that /r/buffalobills remains a pleasant place to discuss the game, the moderation team will use reasonable discretion to remove comments which do not add to the conversation or are excessively negative.").distinguish()
+            reddit_client.subreddit(subreddit).mod.distinguish(submission.reply("**Notice:** In an effort to ensure that /r/buffalobills remains a pleasant place to discuss the game, the moderation team will use reasonable discretion to remove comments which do not add to the conversation or are excessively negative."), how='yes')
 
             #Begin monitoring the game
             logging.info("bb-game-thread-poster: Starting game monitor")
@@ -152,10 +154,10 @@ def post_game_thread_check():
     #Remove post-game threads between 6am and 7am EST only.
     if(time.localtime()[3] == 06):
         authenticate()
-        for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-            if("Post-Game Thread:" in str(submission)):
+        for submission in reddit_client.subreddit(subreddit).hot(limit=2):
+            if("Post-Game Thread:" in submission.title):
                 logging.info("bb-game-thread-poster: Post-game thread found... Attempting to unsticky it...")
-                submission.unsticky();
+                submission.mod.sticky(state=False);
             
 try:
     #Load bot settings

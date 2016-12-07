@@ -2,16 +2,16 @@
 import praw
 import time
 import logging
-from prawoauth2 import PrawOAuth2Mini
+#from prawoauth2 import PrawOAuth2Mini
 
 #Reddit Authentication
 def authenticate():
-    global oauth_helper
+    #global oauth_helper
     global reddit_client
     
     logging.info("bb-free-talk-friday: Authenticating to Reddit...")
-    reddit_client = praw.Reddit(user_agent=user_agent)
-    oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
+    reddit_client = praw.Reddit(user_agent=user_agent, client_id=app_key, client_secret=app_secret, refresh_token=refresh_token)
+    #oauth_helper = PrawOAuth2Mini(reddit_client, app_key=app_key, app_secret=app_secret, access_token=access_token, refresh_token=refresh_token, scopes=scopes)
             
 try:
     #Load bot settings
@@ -38,14 +38,15 @@ try:
         )
 
         logging.info("bb-free-talk-friday: Posting thread...")
-        submission = reddit_client.submit(subreddit, threadTitle, threadBody)
+        submission = reddit_client.subreddit(subreddit).submit(threadTitle, threadBody)
+        #submission = reddit_client.submit(subreddit, threadTitle, threadBody)
 
         logging.info("bb-free-talk-friday: Stickying thread...")
-        submission.sticky()
+        submission.mod.sticky(state=True)
         
         time.sleep(10)
         logging.info("bb-free-talk-friday: Commenting on thread...")
-        submission.add_comment("**Got a suggestion for the mods? Reply here and let us know.**").distinguish()
+        reddit_client.subreddit(subreddit).mod.distinguish(submission.reply("**Got a suggestion for the mods? Reply here and let us know.**"), how='yes')
 
         logging.info("bb-free-talk-friday: All done. Exiting...")
 
@@ -57,10 +58,11 @@ try:
         #Check top two posts and unsticky any free-talk friday threads.
         logging.info("bb-free-talk-friday: Begin search for free-talk friday threads to unsticky.")
         
-        for submission in reddit_client.get_subreddit(subreddit).get_hot(limit=2):
-            if("Free-Talk Friday" in str(submission)):
-                logging.info("bb-free-talk-friday: Free-talk Friday thread found. Attempting to unsticky it.")
-                submission.unsticky();
+        for submission in reddit_client.subreddit(subreddit).hot(limit=2):
+            print submission.title
+            if("Free-Talk Friday" in submission.title):
+                logging.info("bb-free-talk-friday: Free-talk Friday thread found. Removing sticky.")
+                submission.mod.sticky(state=False)
 
 except:
     logging.exception("EXCEPTON OCCURRED")
