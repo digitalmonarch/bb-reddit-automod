@@ -65,4 +65,4 @@ try:
                 submission.mod.sticky(state=False)
 
 except:
-    logging.exception("EXCEPTON OCCURRED")
+    logging.exception("EXCEPTION OCCURRED")

@@ -275,4 +275,4 @@ try:
     nflgame.live.run(cb, active_interval=30)
 
 except:
-    logging.exception("bb-game-monitor: EXCEPTON OCCURRED")
+    logging.exception("bb-game-monitor: EXCEPTION OCCURRED")

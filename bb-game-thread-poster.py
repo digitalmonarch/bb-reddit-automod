@@ -195,4 +195,4 @@ try:
         logging.info("bb-game-thread-poster: Nothing to do. Exiting.")
         
 except:
-    logging.exception("bb-game-thread-poster: EXCEPTON OCCURRED")
+    logging.exception("bb-game-thread-poster: EXCEPTION OCCURRED")
