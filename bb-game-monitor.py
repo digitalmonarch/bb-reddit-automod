@@ -37,10 +37,11 @@ def cb(active, completed, diffs):
             #Define the friendly names of both teams
             for t in nflgame.teams:
                 #Hack to correct issue in nflgame where the Jags are referenced as JAC, while nfl.com references them JAX
-                if(g.home == "JAX"):
-                    home_friendlyName = "Jacksonville Jaguars"
-                elif(g.away == "JAX"):
-                    away_friendlyName = "Jacksonville Jaguars"
+                #Note: This should no longer be needed as I corrected the init bug in the API source, but leaving it in case it doesn't work once the season starts.
+                # if(g.home == "JAX"):
+                #     home_friendlyName = "Jacksonville Jaguars"
+                # elif(g.away == "JAX"):
+                #     away_friendlyName = "Jacksonville Jaguars"
 
                 if t[0] == g.home:
                     home_friendlyName = t[3]
@@ -161,18 +162,17 @@ def cb(active, completed, diffs):
             for t in nflgame.teams:
                 
                 #Hack to correct issue in nflgame where the Jags are referenced as JAC, while nfl.com references them JAX
-                if(g.home == "JAX"):
-                    home_friendlyName = "Jacksonville Jaguars"
-                elif(g.away == "JAX"):
-                    away_friendlyName = "Jacksonville Jaguars"
+                #Note: This should no longer be needed as I corrected the init bug in the API source, but leaving it in case it doesn't work once the season starts.
+                # if(g.home == "JAX"):
+                #     home_friendlyName = "Jacksonville Jaguars"
+                # elif(g.away == "JAX"):
+                #     away_friendlyName = "Jacksonville Jaguars"
                 
                 if t[0] == g.home:
                     home_friendlyName = t[3]
                 elif t[0] == g.away:
                     away_friendlyName = t[3]
 
-            #authenticate()
-            #oauth_helper.refresh()
 
             #Check for a game thread and unsticky it if found.
             for submission in reddit_client.subreddit(subreddit).hot(limit=2):

@@ -16,8 +16,8 @@ logging.basicConfig(filename=log_path, format='%(asctime)s %(message)s', datefmt
 # be used to determine when it is time to create gameday threads, how to title them, etc.
 
 xml_base_url = 'http://www.nfl.com/ajax/scorestrip?'
-start_year = 2016 # Years before 2009 don't seem to have JSON feeds.
-end_year = 2016
+start_year = 2018 # Years before 2009 don't seem to have JSON feeds.
+end_year = 2018
 team = 'BUF'
 season_types = (
     ('PRE', xrange(1, 4 + 1)),
@@ -84,15 +84,15 @@ for year in xrange(start_year, end_year + 1):
 #Add an entry for testing
 info = {
     'eid': '2015081452',
-    'wday': 'Sun',
-    'year': 2016,
-    'month': 12,
-    'day': 07,
-    'time': unicode('5:00 PM'),
+    'wday': 'Tues',
+    'year': 2018,
+    'month': 5,
+    'day': 15,
+    'time': unicode('5:05 PM'),
     'season_type': 'REG',
     'week': 0,
     'home': 'BUF',
-    'away': 'ATL',
+    'away': 'PIT',
     'gamekey': '56767',
     'preGamePosted': False,
     'gameDayPosted': False,
