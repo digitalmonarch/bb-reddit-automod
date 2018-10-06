@@ -3,6 +3,7 @@ import shelve
 import praw
 import time
 import logging
+import unicodedata
 #from prawoauth2 import PrawOAuth2Mini
 import os
 

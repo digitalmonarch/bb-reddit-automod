@@ -2,6 +2,7 @@
 import praw
 import time
 import logging
+import unicodedata
 #from prawoauth2 import PrawOAuth2Mini
 
 #Reddit Authentication
@@ -45,9 +46,9 @@ try:
         submission.mod.sticky(state=True)
         
         time.sleep(10)
-        logging.info("bb-free-talk-friday: Adding moderator comment...")
-        submission.reply("**Got a suggestion for the mods? Reply here and let us know.**").mod.distinguish(how='yes', sticky=True)
-        
+        logging.info("bb-free-talk-friday: Commenting on thread...")
+        reddit_client.subreddit(subreddit).mod.distinguish(submission.reply("**Got a suggestion for the mods? Reply here and let us know.**"), how='yes')
+
         logging.info("bb-free-talk-friday: All done. Exiting...")
 
     elif (time.strftime('%a', time.localtime()) == "Sat"):
@@ -59,7 +60,6 @@ try:
         logging.info("bb-free-talk-friday: Begin search for free-talk friday threads to unsticky.")
         
         for submission in reddit_client.subreddit(subreddit).hot(limit=2):
-            print submission.title
             if("Free-Talk Friday" in submission.title):
                 logging.info("bb-free-talk-friday: Free-talk Friday thread found. Removing sticky.")
                 submission.mod.sticky(state=False)
