@@ -134,8 +134,8 @@ def game_thread_check():
             logging.info("bb-game-thread-poster: Waiting 5 seconds...")
             time.sleep(5)
             logging.info("bb-game-thread-poster: Commenting on thread...")
-            reddit_client.subreddit(subreddit).mod.distinguish(submission.reply("**Notice:** In an effort to ensure that /r/buffalobills remains a pleasant place to discuss the game, the moderation team will use reasonable discretion to remove comments which do not add to the conversation or are excessively negative."), how='yes')
-
+            submission.reply("**Notice:** In an effort to ensure that /r/buffalobills remains a pleasant place to discuss the game, the moderation team will use reasonable discretion to remove comments which do not add to the conversation or are excessively negative.").mod.distinguish(how='yes', sticky=True)
+            
             #Disable self-posts for the duration of the game
             logging.info("bb-game-thread-poster: Disabling self-posts until 30 minutes after the completion of the game...")
             reddit_client.subreddit(subreddit).mod.update(link_type="link")

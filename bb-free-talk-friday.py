@@ -40,14 +40,13 @@ try:
 
         logging.info("bb-free-talk-friday: Posting thread...")
         submission = reddit_client.subreddit(subreddit).submit(threadTitle, threadBody)
-        #submission = reddit_client.submit(subreddit, threadTitle, threadBody)
 
         logging.info("bb-free-talk-friday: Stickying thread...")
         submission.mod.sticky(state=True)
         
         time.sleep(10)
         logging.info("bb-free-talk-friday: Commenting on thread...")
-        reddit_client.subreddit(subreddit).mod.distinguish(submission.reply("**Got a suggestion for the mods? Reply here and let us know.**"), how='yes')
+        submission.reply("**Got a suggestion for the mods? Reply here and let us know.**").mod.distinguish(how='yes', sticky=True)
 
         logging.info("bb-free-talk-friday: All done. Exiting...")
 
